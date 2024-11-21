@@ -1,5 +1,6 @@
 import requests
 from lyrics import process_youtube_audio
+#文字起こし結果をインポートできてない
 
 def translate_text_with_gas(text, source_lang='en', target_lang='ja'):
     # Google Apps ScriptのデプロイURL
