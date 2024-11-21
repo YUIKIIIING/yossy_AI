@@ -42,4 +42,4 @@ if __name__ == "__main__":
             text = f.read()
         text_to_speech(text)
     else:
-        print("文字起こしファイルが見つかりません。transcribe_youtube_audio.pyを実行して文字起こしを行ってください。")
+        print("文字起こしファイルが見つかりません。lyrics.pyを実行して文字起こしを行ってください。")
