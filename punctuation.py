@@ -27,3 +27,4 @@ def add_punctuation(text):
     
     # すべての文を結合して最終的な結果を返す
     return ' '.join(punctuated_text).strip()
+
