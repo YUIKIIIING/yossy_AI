@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, send_file
 from lyrics import process_youtube_audio
+from reading import text_to_speech
 import os
 
 app = Flask(__name__)
@@ -28,6 +29,15 @@ def download():
     if os.path.exists("transcription.txt"):
         return send_file("transcription.txt", as_attachment=True)
     return "ファイルが見つかりません。"
+
+@app.route("/read-aloud")
+def read_aloud():
+    try:
+        # reading.py の関数を呼び出して音声ファイルを生成
+        output_file = text_to_speech()
+        return send_file(output_file, as_attachment=True)
+    except Exception as e:
+        return f"エラーが発生しました: {e}"
 
 if __name__ == "__main__":
     app.run(debug=True)

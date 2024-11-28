@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>YouTube文字起こし</title>
+    <title>洋楽ヘルパーくん</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         .form { margin-bottom: 20px; }
@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-    <h1>YouTube文字起こしウェブアプリ</h1>
+    <h1>洋楽ヘルパーくん</h1>
     <form class="form" method="POST">
         <label for="youtube_url">YouTubeのリンクを入力してください:</label><br>
         <input type="url" id="youtube_url" name="youtube_url" placeholder="https://www.youtube.com/..." required style="width: 100%; padding: 8px; margin: 10px 0;">
@@ -19,7 +19,7 @@
     </form>
 
     {% if error %}
-    <p class="error">{{ error }}</p>
+    <p style="color: red;">{{ error }}</p>
     {% endif %}
 
     {% if transcription %}
@@ -27,6 +27,7 @@
         <h3>文字起こし結果:</h3>
         <p>{{ transcription }}</p>
         <a href="/download" style="color: blue;">文字起こし結果をダウンロード</a>
+        <a href="/read-aloud">文字起こし結果を読み上げ</a>
     </div>
     {% endif %}
 </body>

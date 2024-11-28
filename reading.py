@@ -22,7 +22,7 @@ def preserve_contractions(text):
     return text
 
 # Google Cloud Text-to-Speechを使用してテキストを音声に変換する関数
-def text_to_speech(text, output_file="output.mp3"):
+def text_to_speech(input_file="transcription.txt", output_file="output.mp3"):
     print('音声ファイルを生成しています...')
     
     # 短縮形をそのままにしたテキストに変換
@@ -57,11 +57,8 @@ def text_to_speech(text, output_file="output.mp3"):
     # 音声ファイルを再生
     playsound.playsound(output_file)
 
-# transcription.txtからテキストを読み上げる
 if __name__ == "__main__":
-    if os.path.exists("transcription.txt"):
-        with open("transcription.txt", "r", encoding="utf-8") as f:
-            text = f.read()
-        text_to_speech(text)
-    else:
-        print("文字起こしファイルが見つかりません。lyrics.pyを実行して文字起こしを行ってください。")
+    try:
+        text_to_speech()
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
