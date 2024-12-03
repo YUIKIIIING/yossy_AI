@@ -1,64 +1,52 @@
 from google.cloud import texttospeech
-import playsound  # 再生用にインストール: pip install playsound
 import os
-import re
 
-# Google Cloudの認証情報を設定
+# Google Cloud認証設定
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\YUIKIIIING\\Downloads\\geeksalon-441211-4622fab85300.json"
 
-# 短縮形のリストを定義（これにより、分割せずにそのまま読む）
-CONTRACTIONS = [
-    "I'm", "I've", "I'd", "I'll", "I'am", "we're", "we've", "we'll", "you're", "you've", "you'll", "he's", "he've", "he'll",
-    "she's", "she've", "she'll", "it's", "it've", "it'll", "they're", "they've", "they'll", "that's", "who's", "what's",
-    "where's", "how's", "don't", "doesn't", "didn't", "can't", "couldn't", "won't", "wouldn't", "isn't", "aren't", "wasn't",
-    "weren't", "haven't", "hasn't", "hadn't", "shouldn't", "mustn't", "needn't", "mightn't", "couldn't", "wouldn't"
-]
+def generate_audio_from_transcription(input_file="transcription.txt", output_file="output.mp3"):
+    # transcription.txt を確認
+    if not os.path.exists(input_file):
+        raise FileNotFoundError(f"{input_file} が見つかりません。")
 
-# 短縮形をそのまま読み上げるようにする処理
-def preserve_contractions(text):
-    # 短縮形をそのまま扱う（単語ごとにリスト化して、短縮形はそのまま保持）
-    for contraction in CONTRACTIONS:
-        text = text.replace(contraction, f" {contraction} ")  # 短縮形の前後にスペースを追加して調整
-    return text
+    # transcription.txt を読み込む
+    text = ""
+    with open(input_file, "r", encoding="utf-8") as f:
+        text = f.read()
 
-# Google Cloud Text-to-Speechを使用してテキストを音声に変換する関数
-def text_to_speech(input_file="transcription.txt", output_file="output.mp3"):
-    print('音声ファイルを生成しています...')
-    
-    # 短縮形をそのままにしたテキストに変換
-    text = preserve_contractions(text)
+    if not text.strip():
+        raise ValueError(f"{input_file} が空です。")
 
-    # Google CloudのText-to-Speechクライアントを初期化
+    # Google Text-to-Speechを初期化
     client = texttospeech.TextToSpeechClient()
-
-    # 音声変換するテキストと音声設定
     synthesis_input = texttospeech.SynthesisInput(text=text)
     voice = texttospeech.VoiceSelectionParams(
-        language_code="en-US",  # 言語設定 (例: 英語)
-        ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL  # 声の性別
+        language_code="en-US",
+        ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
     )
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3,
-        speaking_rate=0.7  # MP3形式で出力,スピードを設定
-    )
+    audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3,
+                                            speaking_rate=0.7)  # MP3形式で出力,スピードを設定)
 
-    # テキストを音声に変換
+    # 音声生成リクエスト
     response = client.synthesize_speech(
         input=synthesis_input,
         voice=voice,
         audio_config=audio_config
     )
 
-    # 生成した音声をMP3ファイルに保存
+    # MP3ファイルとして保存
     with open(output_file, "wb") as out:
         out.write(response.audio_content)
-        print(f"音声ファイルが保存されました: {output_file}")
 
-    # 音声ファイルを再生
-    playsound.playsound(output_file)
+    print(f"音声ファイルが生成されました: {output_file}")
+    return output_file
 
 if __name__ == "__main__":
     try:
-        text_to_speech()
+        generate_audio_from_transcription()
+    except FileNotFoundError as e:
+        print(f"エラー: {e}")
+    except ValueError as e:
+        print(f"エラー: {e}")
     except Exception as e:
-        print(f"エラーが発生しました: {e}")
+        print(f"予期しないエラーが発生しました: {e}")
