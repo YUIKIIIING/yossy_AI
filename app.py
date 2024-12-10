@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file, redirect, url_for
+from flask import Flask, request, render_template, send_file
 from lyrics import process_youtube_audio
 from reading import generate_audio_from_transcription
 from translation import translate_text_with_gas, correct_grammar

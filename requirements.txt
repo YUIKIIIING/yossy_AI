@@ -1,3 +1,4 @@
+gunicorn==20.0.4 
 Flask==3.0.3
 yt_dlp==2024.10.22
 faster-whisper==1.0.3
