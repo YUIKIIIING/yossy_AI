@@ -1,8 +1,7 @@
 from google.cloud import texttospeech
+from google.oauth2 import service_account
 import os
-
-# Google Cloud認証設定
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\YUIKIIIING\\Downloads\\geeksalon-441211-4622fab85300.json"
+import json
 
 def generate_audio_from_transcription(input_file="transcription.txt", output_file="output.mp3"):
     # transcription.txt を確認
@@ -10,22 +9,36 @@ def generate_audio_from_transcription(input_file="transcription.txt", output_fil
         raise FileNotFoundError(f"{input_file} が見つかりません。")
 
     # transcription.txt を読み込む
-    text = ""
     with open(input_file, "r", encoding="utf-8") as f:
         text = f.read()
 
     if not text.strip():
         raise ValueError(f"{input_file} が空です。")
 
-    # Google Text-to-Speechを初期化
-    client = texttospeech.TextToSpeechClient()
+    # 環境変数からサービスアカウントキーを取得
+    credentials_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+    if not credentials_json:
+        raise EnvironmentError("GOOGLE_APPLICATION_CREDENTIALS_JSON が設定されていません。")
+
+    # JSON文字列をPythonオブジェクトに変換
+    credentials_dict = json.loads(credentials_json)
+
+    # サービスアカウント資格情報オブジェクトを生成
+    credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+
+    # Google Text-to-Speechクライアントを初期化
+    client = texttospeech.TextToSpeechClient(credentials=credentials)
+
+    # リクエスト構築
     synthesis_input = texttospeech.SynthesisInput(text=text)
     voice = texttospeech.VoiceSelectionParams(
         language_code="en-US",
         ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
     )
-    audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3,
-                                            speaking_rate=0.7)  # MP3形式で出力,スピードを設定)
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3,
+        speaking_rate=0.7
+    )
 
     # 音声生成リクエスト
     response = client.synthesize_speech(
@@ -40,13 +53,3 @@ def generate_audio_from_transcription(input_file="transcription.txt", output_fil
 
     print(f"音声ファイルが生成されました: {output_file}")
     return output_file
-
-if __name__ == "__main__":
-    try:
-        generate_audio_from_transcription()
-    except FileNotFoundError as e:
-        print(f"エラー: {e}")
-    except ValueError as e:
-        print(f"エラー: {e}")
-    except Exception as e:
-        print(f"予期しないエラーが発生しました: {e}")
