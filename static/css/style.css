@@ -1,0 +1,206 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color:#FAEBD7; /* 背景を黒に */
+  color: #fff; /* 文字色を白に */
+}
+
+header {
+  background-color: #181818; /* ヘッダーを黒に近い色に */
+  color: #1DB954; /* Spotifyの緑 */
+  padding: 15px 20px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* ヘッダーに影をつける */
+}
+
+main {
+  padding: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form {
+  margin-bottom: 30px;
+  background: #121212; /* 深い黒に近い背景 */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7); /* 黒い影を強調 */
+}
+
+.form input[type="url"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #FFD700; /* 枠は金色 */
+  border-radius: 5px;
+  background-color: #000; /* フォーム背景を黒に */
+  color: white;
+}
+
+.form input[type="url"]::placeholder {
+  color: #555; /* プレースホルダー文字を薄いグレーに */
+}
+
+.form button {
+  background-color: #1DB954; /* ボタンをSpotifyの緑に */
+  color: black; /* ボタン文字を黒にしてコントラストを強調 */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease; /* ホバーアニメーションを追加 */
+}
+
+.form button:hover {
+  background-color: #1ed760; /* ホバー時に少し明るい緑に */
+}
+
+/* ローディング画面全体のスタイル */
+#loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9); /* 背景を黒にし、少し透明にする */
+  z-index: 1000;
+}
+
+/* スピナー全体のスタイル */
+.radar-spinner {
+  height: 60px;
+  width: 60px;
+  position: relative;
+  margin-bottom: 20px; /* スピナーと文字の間に余白を追加 */
+}
+
+.radar-spinner .circle {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  animation: radar-spinner-animation 2s infinite;
+}
+
+.radar-spinner .circle:nth-child(1) {
+  padding: calc(60px * 5 * 2 * 0 / 110);
+  animation-delay: 300ms;
+}
+
+.radar-spinner .circle:nth-child(2) {
+  padding: calc(60px * 5 * 2 * 1 / 110);
+  animation-delay: 300ms;
+}
+
+.radar-spinner .circle:nth-child(3) {
+  padding: calc(60px * 5 * 2 * 2 / 110);
+  animation-delay: 300ms;
+}
+
+.radar-spinner .circle:nth-child(4) {
+  padding: calc(60px * 5 * 2 * 3 / 110);
+  animation-delay: 0ms;
+}
+
+.radar-spinner .circle-inner, .radar-spinner .circle-inner-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  border: calc(60px * 5 / 110) solid transparent;
+}
+
+.radar-spinner .circle-inner {
+  border-left-color: #ff1d5e; /* スピナーの色 */
+  border-right-color: #ff1d5e;
+}
+
+@keyframes radar-spinner-animation {
+  50% {
+      transform: rotate(180deg);
+  }
+  100% {
+      transform: rotate(0deg);
+  }
+}
+
+/* "LOADING" の文字のスタイル */
+.loading-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff; /* 白い文字 */
+  text-transform: uppercase; /* 大文字に変換 */
+  letter-spacing: 0.2em;
+  animation: loading-text-animation 1.5s infinite;
+}
+
+/* 点滅アニメーション */
+@keyframes loading-text-animation {
+  0% {
+      content: "LOADING";
+      opacity: 1;
+  }
+  33% {
+      content: "LOADING.";
+      opacity: 0.7;
+  }
+  66% {
+      content: "LOADING..";
+      opacity: 0.5;
+  }
+  100% {
+      content: "LOADING...";
+      opacity: 0.7;
+  }
+}
+
+.error {
+  color: #ff4d4d; /* エラーは赤 */
+  margin-bottom: 20px;
+}
+
+.result {
+  background: #121212; /* 深い黒に近い背景 */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7); /* 黒い影を強調 */
+  margin-top: 20px;
+}
+
+.result h3 {
+  margin-top: 0;
+  color: #1DB954; /* 見出しをSpotifyの緑に */
+}
+
+.result a {
+  display: inline-block;
+  margin: 10px 5px 0 0;
+  color: black;
+  background-color: #1DB954; /* ボタン背景をSpotifyの緑に */
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.result a:hover {
+  background-color: #1ed760; /* ホバー時に少し明るい緑に */
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #181818; /* フッターを黒に近い色に */
+  color: #1DB954; /* Spotifyの緑 */
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

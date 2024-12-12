@@ -12,15 +12,14 @@ def index():
     if request.method == "POST":
         youtube_url = request.form.get("youtube_url")
         if not youtube_url:
-            return render_template("index.html", error="YouTubeリンクを入力してください。")
+            return {"error": "YouTubeリンクを入力してください。"}, 400
 
         try:
             # 文字起こし処理
             transcription = process_youtube_audio(youtube_url)
-            return render_template("index.html", transcription=transcription)
-
+            return {"transcription": transcription}  # JSONで結果を返す
         except Exception as e:
-            return render_template("index.html", error=str(e))
+            return {"error": str(e)}, 500
 
     return render_template("index.html")
 

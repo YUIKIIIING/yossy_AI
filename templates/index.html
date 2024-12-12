@@ -4,115 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>洋楽ヘルパーくん</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
-            color: #333;
-        }
-        header {
-            background-color: #4caf50;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
-        main {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .form {
-            margin-bottom: 30px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .form input[type="url"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .form button {
-            background-color: #4caf50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .form button:hover {
-            background-color: #45a049;
-        }
-        .error {
-            color: red;
-            margin-bottom: 20px;
-        }
-        .result {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        .result h3 {
-            margin-top: 0;
-        }
-        .result a {
-            display: inline-block;
-            margin: 10px 5px 0 0;
-            color: white;
-            background-color: #007bff;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .result a:hover {
-            background-color: #0056b3;
-        }
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #4caf50;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="icon" href="../static/images/music_app_logo.png">
 </head>
+
 <body>
     <header>
         <h1>洋楽ヘルパーくん</h1>
     </header>
     <main>
-        <form class="form" method="POST">
-            <label for="youtube_url">YouTubeのリンクを入力してください:</label><br>
-            <input type="url" id="youtube_url" name="youtube_url" placeholder="https://www.youtube.com/..." required>
-            <button type="submit">文字起こしを開始</button>
-        </form>
-
-        {% if error %}
-        <p class="error">{{ error }}</p>
-        {% endif %}
-
-        {% if transcription %}
-        <div class="result">
-            <h3>文字起こし結果:</h3>
-            <p>{{ transcription }}</p>
-            <a href="/download">文字起こし結果をダウンロード</a>
-            <a href="/read-aloud">文字起こし結果を読み上げ</a>
-            <a href="/translate">翻訳する</a>
+    <form id="transcriptionForm" class="form">
+        <label for="youtube_url">YouTubeのリンクを入力してください:</label><br>
+        <input type="url" id="youtube_url" name="youtube_url" placeholder="https://www.youtube.com/..." required>
+        <button type="submit">文字起こしを開始</button>
+    </form>    
+        <div id="loading" style="display: none;">
+            <div class="radar-spinner">
+                <div class="circle">
+                    <div class="circle-inner-container">
+                        <div class="circle-inner"></div>
+                    </div>
+                </div>
+                <div class="circle">
+                    <div class="circle-inner-container">
+                        <div class="circle-inner"></div>
+                    </div>
+                </div>
+                <div class="circle">
+                    <div class="circle-inner-container">
+                        <div class="circle-inner"></div>
+                    </div>
+                </div>
+                <div class="circle">
+                    <div class="circle-inner-container">
+                        <div class="circle-inner"></div>
+                    </div>
+                </div>
+            </div>
+            <h1 class="loading-text">LOADING</h1>
         </div>
-        {% endif %}
-    </main>
-    {% block content %}
-    {% endblock %}
+        
+        </div>
+        <div id="result" style="display: none;">
+            <div class="result">
+                <h3>文字起こし結果:</h3>
+                <p id="transcriptionText"></p>
+                <a id="downloadLink" href="/download" style="display: none;">文字起こし結果をダウンロード</a>
+                <a id="readAloudLink" href="/read-aloud" style="display: none;">文字起こし結果を読み上げ</a>
+                <a id="translateLink" href="/translate" style="display: none;">翻訳する</a>
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+    </main>    
+    <script>
+        document.getElementById("transcriptionForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // デフォルトのフォーム送信を防ぐ
     
-</body>
-</html>
+            // ローディング画面を表示し、結果を非表示にする
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("result").style.display = "none";
+    
+            // フォームデータを取得
+            const formData = new FormData(event.target);
+            const url = event.target.action || "/"; // フォーム送信先
+    
+            try {
+                // サーバーに非同期リクエストを送信
+                const response = await fetch(url, {
+                    method: "POST",
+                    body: formData,
+                });
+    
+                // サーバーからのレスポンスを取得
+                if (response.ok) {
+                    const result = await response.json(); // JSON形式のデータを期待
+                    document.getElementById("transcriptionText").textContent = result.transcription;
+    
+                    // リンクを表示
+                    document.getElementById("downloadLink").style.display = "inline-block";
+                    document.getElementById("readAloudLink").style.display = "inline-block";
+                    document.getElementById("translateLink").style.display = "inline-block";
+    
+                    // 結果を表示
+                    document.getElementById("result").style.display = "block";
+                } else {
+                    document.getElementById("transcriptionText").textContent = "エラーが発生しました。";
+                    document.getElementById("result").style.display = "block";
+                }
+            } catch (error) {
+                console.error("エラー:", error);
+                document.getElementById("transcriptionText").textContent = "エラーが発生しました。";
+                document.getElementById("result").style.display = "block";
+            } finally {
+                // ローディング画面を非表示にする
+                document.getElementById("loading").style.display = "none";
+            }
+        });
+    </script>
+</body>    
