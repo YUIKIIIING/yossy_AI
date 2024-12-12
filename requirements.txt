@@ -5,4 +5,5 @@ faster-whisper==1.0.3
 requests== 2.32.3
 language_tool_python==2.8.1
 spacy==3.8.2
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.6.0/en_core_web_sm-3.6.0-py3-none-any.whl
 google-cloud-texttospeech==2.21.0
