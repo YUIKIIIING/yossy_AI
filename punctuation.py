@@ -1,8 +1,21 @@
 import spacy
 #stanzaからspacyに変更
 
-# spaCyモデルのロード（英語モデル）
-nlp = spacy.load("en_core_web_sm")  # 英語モデル
+# モデルを初期化するためのキャッシュ
+nlp = None
+
+def load_spacy_model():
+    global nlp
+    if nlp is None:
+        print("Loading spaCy model...")
+        nlp = spacy.load("en_core_web_sm")  # 初回のロード時にモデルを読み込む
+    return nlp
+
+# 使用する際には、この関数を呼び出してモデルを取得
+def process_text(text):
+    nlp = load_spacy_model()  # モデルをロード（初回だけ）
+    doc = nlp(text)
+    return doc
 
 def add_punctuation(text):
     if not text.strip():

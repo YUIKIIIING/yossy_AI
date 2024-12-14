@@ -2,6 +2,7 @@
 from faster_whisper import WhisperModel
 from youtubemp3 import download_youtube_audio_as_mp3
 from punctuation import add_punctuation
+from punctuation import process_text
 import os
 
 # Whisperモデルの初期化（グローバル変数として定義）
@@ -34,8 +35,9 @@ def process_youtube_audio(youtube_url):
             os.remove(mp3_path)
         print(f"MP3ファイルが削除されました: {mp3_path}")
 
+    doc=process_text(transcription)
     # 句読点を追加
-    punctuated_text = add_punctuation(transcription)
+    punctuated_text = add_punctuation(doc)
 
     with open("transcription.txt", "w", encoding="utf-8") as f:
         f.write(punctuated_text)
