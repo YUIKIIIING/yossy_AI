@@ -1,28 +1,29 @@
 import spacy
-#stanzaからspacyに変更
 
-# モデルを初期化するためのキャッシュ
+# spaCyモデルのキャッシュ
 nlp = None
 
+# モデルを初期化
 def load_spacy_model():
     global nlp
     if nlp is None:
         print("Loading spaCy model...")
-        nlp = spacy.load("en_core_web_sm")  # 初回のロード時にモデルを読み込む
+        nlp = spacy.load("en_core_web_sm")  # 小型の英語モデルをロード
     return nlp
 
-# 使用する際には、この関数を呼び出してモデルを取得
+# テキストを解析する際に使用
 def process_text(text):
     nlp = load_spacy_model()  # モデルをロード（初回だけ）
     doc = nlp(text)
     return doc
 
-def add_punctuation(text):
-    if not text.strip():
-        return text  # 空の入力に対処
-    
-    # テキストの解析
-    doc = nlp(text)
+# テキストに句読点を追加する関数
+def add_punctuation(doc):
+    # docがstr型の場合、解析してspaCyのDoc型に変換
+    if isinstance(doc, str):
+        nlp = load_spacy_model()
+        doc = nlp(doc)
+
     punctuated_sentences = []
 
     for sentence in doc.sents:
