@@ -68,5 +68,5 @@ def translate():
     except Exception as e:
         return render_template("translation.html", error=f"エラーが発生しました: {e}")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
