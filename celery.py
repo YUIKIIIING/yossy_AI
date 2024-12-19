@@ -15,3 +15,10 @@ def make_celery(app):
 
 # Celeryを作成
 celery = make_celery(app)
+
+# celery.pyの中での遅延インポートの例
+def create_celery_app():
+    from celery import Celery
+    app = Celery('your_app')
+    app.config_from_object('your_config_module')
+    return app
