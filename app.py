@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, send_file, jsonify
-from celery import Celery
-from celery import current_app
-from celery import make_celery
+from celery_config import Celery
+from celery_config import current_app
+from celery_config import make_celery
 from lyrics import process_youtube_audio
 from reading import generate_audio_from_transcription
 from translation import process_translation_async, correct_grammar
