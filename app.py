@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, send_file, jsonify
-from celery_config import Celery
-from celery_config import current_app
 from celery_config import make_celery
+from celery import Celery
 from lyrics import process_youtube_audio
 from reading import generate_audio_from_transcription
 from translation import process_translation_async, correct_grammar
@@ -16,6 +15,8 @@ app.config.update(
 )
 
 # Celeryのインスタンスを作成
+app = Celery('yogakuhelperman', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
+
 celery = make_celery(app)
 
 # トップページ（フォームの表示）
@@ -111,6 +112,6 @@ def task_status(task_id):
     else:
         return jsonify({"status": task.state, "result": str(task.info)})
 
-# アプリ起動
-# if __name__ == "__main__":
-#     app.run(debug=True)
+#アプリ起動
+if __name__ == "__main__":
+    app.run(debug=True)
