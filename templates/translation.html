@@ -4,9 +4,8 @@
 <main>
     <body>
         <div class="result">
-        <h2>翻訳ページ</h2>
         {% if translated_text %}
-            <h3>翻訳結果:</h3>
+            <h2>翻訳結果:</h2>
             <p>{{ translated_text }}</p>
         {% elif error %}
             <h2>エラー:</h2>
